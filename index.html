@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezept URL Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #result {
+            word-break: break-all;
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rezept URL Converter</h1>
+    <div class="container">
+        <div>
+            <label for="recipeUrl">Rezept URL:</label>
+            <input type="text" id="recipeUrl" placeholder="https://www.rezept.com/...">
+        </div>
+        <div>
+            <label for="portions">Anzahl Portionen:</label>
+            <input type="number" id="portions" value="4" min="1">
+        </div>
+        <button onclick="convertUrl()">Konvertieren</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function convertUrl() {
+            const recipeUrl = document.getElementById('recipeUrl').value;
+            const portions = document.getElementById('portions').value;
+            
+            if (!recipeUrl) {
+                alert('Bitte gib eine URL ein');
+                return;
+            }
+
+            const encodedUrl = encodeURIComponent(recipeUrl);
+            const bringUrl = `https://api.getbring.com/rest/bringrecipes/deeplink?url=${encodedUrl}&source=web&baseQuantity=4&requestedQuantity=${portions}`;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <p><strong>Konvertierte URL:</strong></p>
+                <p>${bringUrl}</p>
+                <button onclick="copyToClipboard('${bringUrl}')">URL kopieren</button>
+            `;
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('URL wurde in die Zwischenablage kopiert!');
+            }).catch(err => {
+                console.error('Fehler beim Kopieren: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
